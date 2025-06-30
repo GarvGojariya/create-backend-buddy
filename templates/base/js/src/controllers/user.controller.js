@@ -1,3 +1,4 @@
+import ApiResponse from "../utils/ApiResponse";
 import logger from "../utils/logger";
 
 export const getUsers = async (req, res) => {
@@ -5,10 +6,9 @@ export const getUsers = async (req, res) => {
   const users = [{ id: 1, name: "Default User" }];
   try {
     // Here you would typically fetch users from your database
-    res.json(users);
+    return ApiResponse.success(res, users, "Users fetched successfully");
   } catch (error) {
     logger.error("Error fetching users:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-    return;
+    return ApiResponse.error(res, error);
   }
 };
