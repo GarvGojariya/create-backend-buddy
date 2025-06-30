@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import logger from "../utils/logger";
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   // Simulate fetching users from a database
@@ -7,7 +8,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     // Here you would typically fetch users from your database
     res.json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
+    logger.error("Error fetching users:", error);
     res.status(500).json({ error: "Internal Server Error" });
     return;
   }

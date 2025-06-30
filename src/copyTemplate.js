@@ -143,6 +143,15 @@ export async function copyTemplate(answers) {
     }
   }
 
+  if (swagger) {
+    content = content.replace(
+      "// ##SWAGGER##",
+      `import initSwagger from './swagger.js';
+      initSwagger(app);`
+    );
+  }
+  
+
   // Always copy .gitignore
   await copy("features/git");
 }

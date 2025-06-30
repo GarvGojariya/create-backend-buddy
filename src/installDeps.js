@@ -12,13 +12,19 @@ export function installDeps({
   docker,
 }) {
   const cwd = path.resolve(process.cwd(), projectName);
-  const deps = ["express", "cors", "morgan", "dotenv"];
+  const deps = ["express", "cors", "pino", "pino-pretty", "dotenv","fs", "path"];
   const devDeps = [];
 
   if (language === "TypeScript") devDeps.push("typescript", "ts-node-dev");
   if (orm === "Prisma") {
     deps.push("prisma", "@prisma/client");
   }
+
+  if (swagger) {
+    deps.push("swagger-ui-express", "yamljs");
+    devDeps.push("@types/swagger-ui-express");
+  }
+  deps.push("helmet", "express-rate-limit");
 
   if (orm === "Mongoose") deps.push("mongoose");
   if (database === "Postgres") deps.push("pg");
@@ -34,7 +40,9 @@ export function installDeps({
       "@types/node",
       "@types/express",
       "@types/cors",
-      "@types/morgan"
+      "@types/pino",
+      "@types/helmet",
+      "@types/express-rate-limit"
     );
   }
   log(`📦 Installing dependencies: ${deps.join(", ")}`);

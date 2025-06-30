@@ -42,14 +42,14 @@ export async function askUser() {
     },
   ]);
 
-  const { auth } = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "auth",
-      message: "Include Auth (JWT)?",
-      default: false,
-    },
-  ]);
+  // const { auth } = await inquirer.prompt([
+  //   {
+  //     type: "confirm",
+  //     name: "auth",
+  //     message: "Include Auth (JWT)?",
+  //     default: false,
+  //   },
+  // ]);
 
   const { swagger } = await inquirer.prompt([
     {
@@ -60,14 +60,14 @@ export async function askUser() {
     },
   ]);
 
-  const { docker } = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "docker",
-      message: "Include Docker support?",
-      default: false,
-    },
-  ]);
+  // const { docker } = await inquirer.prompt([
+  //   {
+  //     type: "confirm",
+  //     name: "docker",
+  //     message: "Include Docker support?",
+  //     default: false,
+  //   },
+  // ]);
 
   const { git } = await inquirer.prompt([
     {
@@ -83,9 +83,8 @@ export async function askUser() {
     language,
     orm,
     database,
-    auth,
     swagger,
-    docker,
+    // docker,
     git,
   };
 }

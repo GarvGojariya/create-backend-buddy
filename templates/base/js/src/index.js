@@ -1,27 +1,52 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+
 import userRoutes from "./routes/user.route.js";
+import logger from "./utils/logger.js";
 // ##DB_IMPORT##
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(morgan("dev"));
+// ##SWAGGER##
+
+app.use(helmet());
 app.use(express.json());
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests",
+});
+app.use(limiter);
+
+const allowedOrigins = ["http://localhost:3000"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 // ##DB_INIT##
+app.use("/api/users", userRoutes);
 
 app.get("/", (_req, res) => {
   res.send("API is running");
 });
 
 // ##ROUTES##
-app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
+  logger.info(`🚀 Server running at http://localhost:${PORT}`)
 );
