@@ -9,10 +9,25 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "files": [
+    "bin/",
+    "src/",
+    "templates/"
+  ],
+  "keywords": [
+    "cli",
+    "backend",
+    "nodejs",
+    "scaffold",
+    "express",
+    "starter"
+  ],
+  "author": "Garv Gojariya",
   "license": "ISC",
-  "description": "",
+  "description": "Scaffold modern Node.js backends with your preferred stack",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
