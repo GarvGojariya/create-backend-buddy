@@ -80,6 +80,33 @@ export async function copyTemplate(answers) {
           `sequelize.authenticate().then(() => console.log('Connected to DB'));`
         );
     }
+    if (orm === "Sequelize") {
+      const sequelizeFilePath = path.join(
+        projectPath,
+        "src",
+        "lib",
+        `sequelize.${ext}`
+      );
+      if (await fs.pathExists(sequelizeFilePath)) {
+        let content = await fs.readFile(sequelizeFilePath, "utf8");
+
+        const dialectMap = {
+          Postgres: "postgres",
+          MySQL: "mysql",
+          SQLite: "sqlite",
+        };
+
+        const newDialect = dialectMap[database];
+
+        if (newDialect) {
+          content = content.replace(/##DIALECT##/, newDialect);
+          await fs.writeFile(sequelizeFilePath, content);
+          log(`✔ updated: Sequelize dialect set to "${newDialect}"`);
+        } else {
+          log(`⚠️ could not match dialect for database: ${database}`);
+        }
+      }
+    }    
 
     await fs.writeFile(indexPath, content);
     log(`✔ updated: src/index.${ext} with DB integration`);

@@ -16,7 +16,10 @@ export function installDeps({
   const devDeps = [];
 
   if (language === "TypeScript") devDeps.push("typescript", "ts-node-dev");
-  if (orm === "Prisma") deps.push("prisma", "@prisma/client");
+  if (orm === "Prisma") {
+    deps.push("prisma", "@prisma/client");
+  }
+
   if (orm === "Mongoose") deps.push("mongoose");
   if (database === "Postgres") deps.push("pg");
   if (database === "MySQL") deps.push("mysql2");
@@ -40,5 +43,10 @@ export function installDeps({
   if (devDeps.length) {
     log(`⚙️ Installing dev dependencies: ${devDeps.join(", ")}`);
     spawnSync("npm", ["install", "-D", ...devDeps], { cwd, stdio: "inherit" });
+  }
+
+  if (orm === "Prisma") {
+    log("⚙️ Running prisma generate...");
+    spawnSync("npx", ["prisma", "generate"], { cwd, stdio: "inherit" });
   }
 }
