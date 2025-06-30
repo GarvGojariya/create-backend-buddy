@@ -25,7 +25,6 @@ export async function copyTemplate(answers) {
     }
   };
 
-
   const languageCode = language === "JavaScript" ? "js" : "ts";
 
   // Copy base template
@@ -51,6 +50,7 @@ export async function copyTemplate(answers) {
   if (await fs.pathExists(indexPath)) {
     let content = await fs.readFile(indexPath, "utf8");
 
+    // DB logic
     if (orm === "Prisma") {
       content = content
         .replace(
@@ -80,77 +80,20 @@ export async function copyTemplate(answers) {
           `sequelize.authenticate().then(() => console.log('Connected to DB'));`
         );
     }
-    if (orm === "Sequelize") {
-      const sequelizeFilePath = path.join(
-        projectPath,
-        "src",
-        "lib",
-        `sequelize.${ext}`
+
+    // Swagger injection
+    if (swagger) {
+      content = content.replace(
+        "// ##SWAGGER##",
+        `import initSwagger from './swagger.${ext}';\ninitSwagger(app);`
       );
-      if (await fs.pathExists(sequelizeFilePath)) {
-        let content = await fs.readFile(sequelizeFilePath, "utf8");
-
-        const dialectMap = {
-          Postgres: "postgres",
-          MySQL: "mysql",
-          SQLite: "sqlite",
-        };
-
-        const newDialect = dialectMap[database];
-
-        if (newDialect) {
-          content = content.replace(/##DIALECT##/, newDialect);
-          await fs.writeFile(sequelizeFilePath, content);
-          log(`✔ updated: Sequelize dialect set to "${newDialect}"`);
-        } else {
-          log(`⚠️ could not match dialect for database: ${database}`);
-        }
-      }
-    }    
+    }
 
     await fs.writeFile(indexPath, content);
     log(`✔ updated: src/index.${ext} with DB integration`);
   } else {
     log(`⚠️ Could not find src/index.${ext} to inject DB logic.`);
   }
-
-  if (orm === "Prisma") {
-    const prismaPath = path.join(projectPath, "prisma", "schema.prisma");
-
-    if (await fs.pathExists(prismaPath)) {
-      let prismaSchema = await fs.readFile(prismaPath, "utf8");
-
-      const dbProviderMap = {
-        Postgres: "postgresql",
-        MySQL: "mysql",
-        SQLite: "sqlite",
-        Mongo: "mongodb",
-      };
-
-      const newProvider = dbProviderMap[database];
-
-      if (newProvider) {
-        prismaSchema = prismaSchema.replace(
-          /provider\s*=\s*"(.*?)"/,
-          `provider = "${newProvider}"`
-        );
-
-        await fs.writeFile(prismaPath, prismaSchema);
-        log(`✔ updated: prisma/schema.prisma with provider "${newProvider}"`);
-      } else {
-        log(`⚠️ could not match database to provider: ${database}`);
-      }
-    }
-  }
-
-  if (swagger) {
-    content = content.replace(
-      "// ##SWAGGER##",
-      `import initSwagger from './swagger.js';
-      initSwagger(app);`
-    );
-  }
-  
 
   // Always copy .gitignore
   await copy("features/git");
