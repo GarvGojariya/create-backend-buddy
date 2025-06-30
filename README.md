@@ -332,17 +332,6 @@ services:
 
 ---
 
-## 🛣️ Roadmap
-
-- [ ] 🔐 **Authentication Templates** - JWT, OAuth, Passport.js
-- [ ] 🧪 **Testing Setup** - Jest, Supertest configurations
-- [ ] 📊 **Monitoring** - Health checks, metrics endpoints
-- [ ] 🔄 **CI/CD Templates** - GitHub Actions, GitLab CI
-- [ ] 📦 **More ORMs** - TypeORM, Objection.js support
-- [ ] ☁️ **Cloud Configs** - AWS, GCP, Azure deployment templates
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
