@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import userRoutes from "./routes/user.route.js";
 // ##DB_IMPORT##
 
 dotenv.config();
@@ -16,6 +17,9 @@ app.use(express.json());
 app.get("/", (_req, res) => {
   res.send("API is running");
 });
+
+// ##ROUTES##
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
