@@ -12,27 +12,24 @@ export function installDeps({
   docker,
 }) {
   const cwd = path.resolve(process.cwd(), projectName);
-  const deps = ["express", "cors", "pino", "pino-pretty", "dotenv","fs", "path"];
+
+  const deps = [
+    "express",
+    "cors",
+    "pino",
+    "pino-pretty",
+    "dotenv",
+    "helmet",
+    "express-rate-limit",
+  ];
+
   const devDeps = [];
 
-  if (language === "TypeScript") devDeps.push("typescript", "ts-node-dev");
-  if (orm === "Prisma") {
-    deps.push("prisma", "@prisma/client");
+  // Base language dependencies
+  if (language === "JavaScript") {
+    devDeps.push("nodemon");
   }
 
-  if (swagger) {
-    deps.push("swagger-ui-express", "yamljs");
-    devDeps.push("@types/swagger-ui-express");
-  }
-  deps.push("helmet", "express-rate-limit");
-
-  if (orm === "Mongoose") deps.push("mongoose");
-  if (database === "Postgres") deps.push("pg");
-  if (database === "MySQL") deps.push("mysql2");
-  if (database === "SQLite") deps.push("sqlite3");
-  if (auth) deps.push("jsonwebtoken", "bcryptjs");
-  if (swagger) deps.push("swagger-ui-express");
-  if (language === "JavaScript") devDeps.push("nodemon");
   if (language === "TypeScript") {
     devDeps.push(
       "typescript",
@@ -45,16 +42,42 @@ export function installDeps({
       "@types/express-rate-limit"
     );
   }
-  log(`📦 Installing dependencies: ${deps.join(", ")}`);
-  spawnSync("npm", ["install", ...deps], { cwd, stdio: "inherit" });
 
+  // ORM-specific
+  if (orm === "Prisma") deps.push("prisma", "@prisma/client");
+  if (orm === "Mongoose") deps.push("mongoose");
+
+  // DB-specific
+  if (database === "Postgres") deps.push("pg");
+  if (database === "MySQL") deps.push("mysql2");
+  if (database === "SQLite") deps.push("sqlite3");
+
+  // Feature-specific
+  if (auth) deps.push("jsonwebtoken", "bcryptjs");
+  if (swagger) {
+    deps.push("swagger-ui-express", "yamljs");
+    devDeps.push("@types/swagger-ui-express");
+  }
+
+  // Ensure package.json exists
+  log("📁 Ensuring package.json exists...");
+  spawnSync("npm", ["init", "-y"], { cwd, stdio: "inherit" });
+
+  // Install prod deps
+  if (deps.length) {
+    log(`📦 Installing dependencies:\n→ ${deps.join(", ")}`);
+    spawnSync("npm", ["install", ...deps], { cwd, stdio: "inherit" });
+  }
+
+  // Install dev deps
   if (devDeps.length) {
-    log(`⚙️ Installing dev dependencies: ${devDeps.join(", ")}`);
+    log(`⚙️ Installing devDependencies:\n→ ${devDeps.join(", ")}`);
     spawnSync("npm", ["install", "-D", ...devDeps], { cwd, stdio: "inherit" });
   }
 
+  // Run prisma generate if selected
   if (orm === "Prisma") {
-    log("⚙️ Running prisma generate...");
+    log("🔧 Running Prisma generate...");
     spawnSync("npx", ["prisma", "generate"], { cwd, stdio: "inherit" });
   }
 }
