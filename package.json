@@ -23,7 +23,7 @@
     "starter"
   ],
   "author": "Garv Gojariya",
-  "license": "ISC",
+  "license": "MIT",
   "description": "Scaffold modern Node.js backends with your preferred stack",
   "engines": {
     "node": ">=18"
