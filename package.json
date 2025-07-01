@@ -35,5 +35,12 @@
     "fs-extra": "^11.3.0",
     "inquirer": "^12.6.3",
     "ora": "^8.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GarvGojariya/create-backend-buddy.git"
+  },
+  "issues": {
+    "url": "https://github.com/GarvGojariya/create-backend-buddy/issues"
   }
 }
