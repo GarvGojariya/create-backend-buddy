@@ -42,5 +42,22 @@
   },
   "issues": {
     "url": "https://github.com/GarvGojariya/create-backend-buddy/issues"
+  },
+  "contributes": {
+    "license": "MIT",
+    "description": "Scaffold modern Node.js backends with your preferred stack",
+    "keywords": [
+      "cli",
+      "backend",
+      "nodejs", 
+      "scaffold", 
+      "express", 
+      "starter"
+    ],
+    "author": "Garv Gojariya",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/GarvGojariya/create-backend-buddy.git"
+    }
   }
 }
