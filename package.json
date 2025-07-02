@@ -1,6 +1,6 @@
 {
   "name": "create-backend-buddy",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "index.js",
   "bin": {
     "create-backend-buddy": "bin/index.js"
@@ -49,9 +49,9 @@
     "keywords": [
       "cli",
       "backend",
-      "nodejs", 
-      "scaffold", 
-      "express", 
+      "nodejs",
+      "scaffold",
+      "express",
       "starter"
     ],
     "author": "Garv Gojariya",
