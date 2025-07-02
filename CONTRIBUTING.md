@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![Contributors](https://img.shields.io/github/contributors/yourusername/create-backend-buddy?style=for-the-badge&color=ff6b6b)
+![Contributors](https://img.shields.io/github/contributors/GarvGojariya/create-backend-buddy?style=for-the-badge&color=ff6b6b)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)
-![License](https://img.shields.io/github/license/yourusername/create-backend-buddy?style=for-the-badge&color=blue)
+![License](https://img.shields.io/github/license/GarvGojariya/create-backend-buddy?style=for-the-badge&color=blue)
 
 **Thank you for your interest in contributing! 🎉**
 
