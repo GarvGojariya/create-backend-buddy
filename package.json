@@ -38,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GarvGojariya/create-backend-buddy.git"
+    "url": "git+https://github.com/GarvGojariya/create-backend-buddy.git"
   },
   "issues": {
     "url": "https://github.com/GarvGojariya/create-backend-buddy/issues"
