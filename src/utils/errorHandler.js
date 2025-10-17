@@ -101,6 +101,21 @@ export function validateDirectory(dirPath, description = 'directory') {
 }
 
 /**
+ * Validates that a directory exists (read-only check)
+ * @param {string} dirPath - Path to the directory
+ * @param {string} description - Description of the directory
+ */
+export function validateDirectoryExists(dirPath, description = 'directory') {
+  if (!fs.existsSync(dirPath)) {
+    throw new CLIError(
+      `${description} does not exist: ${dirPath}`,
+      'DIRECTORY_NOT_FOUND',
+      { dirPath, description }
+    );
+  }
+}
+
+/**
  * Safely executes a command with error handling
  * @param {string} command - The command to execute
  * @param {Array} args - Command arguments

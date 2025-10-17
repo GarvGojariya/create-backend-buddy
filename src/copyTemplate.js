@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path, { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { log } from "./utils/log.js";
-import { withErrorHandling, validateFileExists, validateDirectory, CLIError } from "./utils/errorHandler.js";
+import { withErrorHandling, validateFileExists, validateDirectory, validateDirectoryExists, CLIError } from "./utils/errorHandler.js";
 
 export async function copyTemplate(answers) {
   const __filename = fileURLToPath(import.meta.url);
@@ -16,8 +16,8 @@ export async function copyTemplate(answers) {
   const projectPath = path.resolve(process.cwd(), projectName);
   const languageCode = language === "JavaScript" ? "js" : "ts";
 
-  // Validate templates directory exists
-  validateDirectory(TEMPLATES_PATH, "Templates directory");
+  // Validate templates directory exists (read-only check)
+  validateDirectoryExists(TEMPLATES_PATH, "Templates directory");
 
   // Create project directory with error handling
   try {
