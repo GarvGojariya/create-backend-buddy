@@ -1,9 +1,39 @@
 import inquirer from "inquirer";
+import { validateProjectName, validateCurrentDirectory, validateOrmDatabaseCompatibility } from "./utils/validation.js";
+import { CLIError } from "./utils/errorHandler.js";
 
 export async function askUser() {
-  const { projectName } = await inquirer.prompt([
-    { type: "input", name: "projectName", message: "Project name:" },
-  ]);
+  // Validate current directory first
+  const dirValidation = validateCurrentDirectory();
+  if (!dirValidation.isValid) {
+    throw new CLIError(dirValidation.message, 'VALIDATION_ERROR');
+  }
+
+  // Get project name with validation
+  let projectName;
+  let isValidName = false;
+  
+  while (!isValidName) {
+    const { projectName: inputName } = await inquirer.prompt([
+      { 
+        type: "input", 
+        name: "projectName", 
+        message: "Project name:",
+        validate: (input) => {
+          const validation = validateProjectName(input);
+          return validation.isValid || validation.message;
+        }
+      },
+    ]);
+    
+    const validation = validateProjectName(inputName);
+    if (validation.isValid) {
+      projectName = inputName;
+      isValidName = true;
+    } else {
+      console.log(`❌ ${validation.message}`);
+    }
+  }
 
   const { language } = await inquirer.prompt([
     {
@@ -41,6 +71,12 @@ export async function askUser() {
       choices: dbChoices,
     },
   ]);
+
+  // Validate ORM and database compatibility
+  const compatibilityValidation = validateOrmDatabaseCompatibility(orm, database);
+  if (!compatibilityValidation.isValid) {
+    throw new CLIError(compatibilityValidation.message, 'VALIDATION_ERROR');
+  }
 
   // const { auth } = await inquirer.prompt([
   //   {

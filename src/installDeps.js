@@ -1,6 +1,7 @@
 import { spawnSync } from "child_process";
 import path from "path";
 import { log } from "./utils/log.js";
+import { safeExec, validateDirectory, CLIError } from "./utils/errorHandler.js";
 
 export function installDeps({
   projectName,
@@ -12,6 +13,9 @@ export function installDeps({
   docker,
 }) {
   const cwd = path.resolve(process.cwd(), projectName);
+  
+  // Validate project directory exists
+  validateDirectory(cwd, "Project directory");
 
   const deps = [
     "express",
@@ -61,23 +65,55 @@ export function installDeps({
 
   // Ensure package.json exists
   log("📁 Ensuring package.json exists...");
-  spawnSync("npm", ["init", "-y"], { cwd, stdio: "inherit" });
+  try {
+    safeExec("npm", ["init", "-y"], { cwd });
+  } catch (error) {
+    throw new CLIError(
+      "Failed to initialize package.json",
+      'PACKAGE_INIT_ERROR',
+      { cwd, originalError: error }
+    );
+  }
 
   // Install prod deps
   if (deps.length) {
     log(`📦 Installing dependencies:\n→ ${deps.join(", ")}`);
-    spawnSync("npm", ["install", ...deps], { cwd, stdio: "inherit" });
+    try {
+      safeExec("npm", ["install", ...deps], { cwd });
+    } catch (error) {
+      throw new CLIError(
+        "Failed to install dependencies",
+        'DEPENDENCY_INSTALL_ERROR',
+        { deps, cwd, originalError: error }
+      );
+    }
   }
 
   // Install dev deps
   if (devDeps.length) {
     log(`⚙️ Installing devDependencies:\n→ ${devDeps.join(", ")}`);
-    spawnSync("npm", ["install", "-D", ...devDeps], { cwd, stdio: "inherit" });
+    try {
+      safeExec("npm", ["install", "-D", ...devDeps], { cwd });
+    } catch (error) {
+      throw new CLIError(
+        "Failed to install dev dependencies",
+        'DEV_DEPENDENCY_INSTALL_ERROR',
+        { devDeps, cwd, originalError: error }
+      );
+    }
   }
 
   // Run prisma generate if selected
   if (orm === "Prisma") {
     log("🔧 Running Prisma generate...");
-    spawnSync("npx", ["prisma", "generate"], { cwd, stdio: "inherit" });
+    try {
+      safeExec("npx", ["prisma", "generate"], { cwd });
+    } catch (error) {
+      throw new CLIError(
+        "Failed to generate Prisma client",
+        'PRISMA_GENERATE_ERROR',
+        { cwd, originalError: error }
+      );
+    }
   }
 }

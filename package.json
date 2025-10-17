@@ -1,7 +1,7 @@
 {
   "name": "create-backend-buddy",
   "version": "1.0.15",
-  "main": "index.js",
+  "main": "bin/index.js",
   "bin": {
     "create-backend-buddy": "bin/index.js"
   },
@@ -42,22 +42,5 @@
   },
   "issues": {
     "url": "https://github.com/GarvGojariya/create-backend-buddy/issues"
-  },
-  "contributes": {
-    "license": "MIT",
-    "description": "Scaffold modern Node.js backends with your preferred stack",
-    "keywords": [
-      "cli",
-      "backend",
-      "nodejs",
-      "scaffold",
-      "express",
-      "starter"
-    ],
-    "author": "Garv Gojariya",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/GarvGojariya/create-backend-buddy.git"
-    }
   }
 }

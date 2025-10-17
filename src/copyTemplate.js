@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path, { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { log } from "./utils/log.js";
+import { withErrorHandling, validateFileExists, validateDirectory, CLIError } from "./utils/errorHandler.js";
 
 export async function copyTemplate(answers) {
   const __filename = fileURLToPath(import.meta.url);
@@ -15,15 +16,45 @@ export async function copyTemplate(answers) {
   const projectPath = path.resolve(process.cwd(), projectName);
   const languageCode = language === "JavaScript" ? "js" : "ts";
 
-  await fs.ensureDir(projectPath);
+  // Validate templates directory exists
+  validateDirectory(TEMPLATES_PATH, "Templates directory");
+
+  // Create project directory with error handling
+  try {
+    await fs.ensureDir(projectPath);
+    log(`✅ Created project directory: ${projectName}`);
+  } catch (error) {
+    throw new CLIError(
+      `Failed to create project directory: ${error.message}`,
+      'DIRECTORY_CREATION_ERROR',
+      { projectPath, originalError: error }
+    );
+  }
 
   const copy = async (subdir, targetName = "") => {
     const src = path.join(TEMPLATES_PATH, subdir);
     const dest = path.join(projectPath, targetName || "");
-    if (await fs.pathExists(src)) {
-      await fs.copy(src, dest);
-    } else {
-      log(`❌ Missing template folder: ${subdir}`);
+    
+    try {
+      if (await fs.pathExists(src)) {
+        await fs.copy(src, dest);
+        log(`✅ Copied template: ${subdir}`);
+      } else {
+        throw new CLIError(
+          `Missing template folder: ${subdir}`,
+          'TEMPLATE_NOT_FOUND',
+          { subdir, src }
+        );
+      }
+    } catch (error) {
+      if (error instanceof CLIError) {
+        throw error;
+      }
+      throw new CLIError(
+        `Failed to copy template ${subdir}: ${error.message}`,
+        'TEMPLATE_COPY_ERROR',
+        { subdir, src, dest, originalError: error }
+      );
     }
   };
 
