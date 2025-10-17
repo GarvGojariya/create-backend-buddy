@@ -85,8 +85,11 @@ export function installDeps({
   if (deps.length) {
     log(`📦 Installing dependencies:\n→ ${deps.join(", ")}`);
     try {
+      log(`Running: npm install ${deps.join(" ")} in ${cwd}`);
       safeExec("npm", ["install", ...deps], { cwd });
+      log("✅ Dependencies installed successfully");
     } catch (error) {
+      log(`❌ npm install failed: ${error.message}`);
       throw new CLIError(
         "Failed to install dependencies",
         'DEPENDENCY_INSTALL_ERROR',
@@ -99,8 +102,11 @@ export function installDeps({
   if (devDeps.length) {
     log(`⚙️ Installing devDependencies:\n→ ${devDeps.join(", ")}`);
     try {
+      log(`Running: npm install -D ${devDeps.join(" ")} in ${cwd}`);
       safeExec("npm", ["install", "-D", ...devDeps], { cwd });
+      log("✅ Dev dependencies installed successfully");
     } catch (error) {
+      log(`❌ npm install -D failed: ${error.message}`);
       throw new CLIError(
         "Failed to install dev dependencies",
         'DEV_DEPENDENCY_INSTALL_ERROR',
