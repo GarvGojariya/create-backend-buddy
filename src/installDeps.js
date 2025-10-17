@@ -1,5 +1,6 @@
 import { spawnSync } from "child_process";
 import path from "path";
+import fs from "fs";
 import { log } from "./utils/log.js";
 import { safeExec, validateDirectory, CLIError } from "./utils/errorHandler.js";
 
@@ -64,15 +65,20 @@ export function installDeps({
   }
 
   // Ensure package.json exists
-  log("📁 Ensuring package.json exists...");
-  try {
-    safeExec("npm", ["init", "-y"], { cwd });
-  } catch (error) {
-    throw new CLIError(
-      "Failed to initialize package.json",
-      'PACKAGE_INIT_ERROR',
-      { cwd, originalError: error }
-    );
+  const packageJsonPath = path.join(cwd, "package.json");
+  if (!fs.existsSync(packageJsonPath)) {
+    log("📁 Creating package.json...");
+    try {
+      safeExec("npm", ["init", "-y"], { cwd });
+    } catch (error) {
+      throw new CLIError(
+        "Failed to initialize package.json",
+        'PACKAGE_INIT_ERROR',
+        { cwd, originalError: error }
+      );
+    }
+  } else {
+    log("📁 Using existing package.json");
   }
 
   // Install prod deps
