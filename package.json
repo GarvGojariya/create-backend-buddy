@@ -1,6 +1,6 @@
 {
   "name": "create-backend-buddy",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "main": "bin/index.js",
   "bin": {
     "create-backend-buddy": "bin/index.js"
