@@ -127,7 +127,8 @@ export function safeExec(command, args = [], options = {}) {
   
   try {
     const result = spawnSync(command, args, {
-      stdio: 'inherit',
+      stdio: 'pipe', // Change to pipe to capture output
+      encoding: 'utf8',
       ...options
     });
     
@@ -140,11 +141,19 @@ export function safeExec(command, args = [], options = {}) {
     }
     
     if (result.status !== 0) {
+      // Capture stderr output for better error messages
+      const stderr = result.stderr || 'No error details available';
+      const stdout = result.stdout || '';
       throw new CLIError(
-        `Command ${command} failed with exit code ${result.status}`,
+        `Command ${command} failed with exit code ${result.status}. Error: ${stderr}. Output: ${stdout}`,
         'COMMAND_FAILED',
-        { command, args, status: result.status }
+        { command, args, status: result.status, stderr, stdout }
       );
+    }
+    
+    // Print the output to console since we're using pipe
+    if (result.stdout) {
+      console.log(result.stdout);
     }
     
     return result;
