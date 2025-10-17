@@ -173,4 +173,12 @@ export async function copyTemplate(answers) {
 
   // Always copy .gitignore
   await copy("features/git");
+  
+  // Rename gitignore to .gitignore
+  const gitignorePath = path.join(projectPath, "gitignore");
+  const dotGitignorePath = path.join(projectPath, ".gitignore");
+  if (await fs.pathExists(gitignorePath)) {
+    await fs.move(gitignorePath, dotGitignorePath);
+    log("✅ Created .gitignore");
+  }
 }

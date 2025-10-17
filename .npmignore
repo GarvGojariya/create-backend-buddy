@@ -1,0 +1,3 @@
+# Include everything in templates directory, including hidden files
+!templates/**/*
+!templates/**/.*
