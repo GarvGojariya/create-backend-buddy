@@ -96,14 +96,14 @@ export async function askUser() {
     },
   ]);
 
-  // const { docker } = await inquirer.prompt([
-  //   {
-  //     type: "confirm",
-  //     name: "docker",
-  //     message: "Include Docker support?",
-  //     default: false,
-  //   },
-  // ]);
+  const { docker } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "docker",
+      message: "Include Docker support?",
+      default: false,
+    },
+  ]);
 
   const { git } = await inquirer.prompt([
     {
@@ -120,7 +120,7 @@ export async function askUser() {
     orm,
     database,
     swagger,
-    // docker,
+    docker,
     git,
   };
 }

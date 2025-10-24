@@ -64,7 +64,21 @@ export async function copyTemplate(answers) {
   if (database !== "None") await copy(`db/${database.toLowerCase()}`);
   if (auth) await copy("features/auth", "src/features/auth");
   if (swagger) await copy("features/swagger", "src/features/swagger");
-  if (docker) await copy("features/docker");
+  if (docker) {
+    await copy("features/docker");
+    // Update docker-compose.yml for the correct database
+    if (database === "MySQL") {
+      await fs.copy(
+        path.join(TEMPLATES_PATH, "features/docker/docker-compose.mysql.yml"),
+        path.join(projectPath, "docker-compose.yml")
+      );
+    } else if (database === "Mongo") {
+      await fs.copy(
+        path.join(TEMPLATES_PATH, "features/docker/docker-compose.mongo.yml"),
+        path.join(projectPath, "docker-compose.yml")
+      );
+    }
+  }
 
   // Modify Prisma schema if needed
   if (orm === "Prisma") {
@@ -180,5 +194,17 @@ export async function copyTemplate(answers) {
   if (await fs.pathExists(gitignorePath)) {
     await fs.move(gitignorePath, dotGitignorePath);
     log("✅ Created .gitignore");
+  }
+
+  // Copy .env.example to project root if database was selected
+  if (database !== "None") {
+    const dbEnvPath = path.join(projectPath, database.toLowerCase(), ".env.example");
+    const rootEnvPath = path.join(projectPath, ".env.example");
+    
+    if (await fs.pathExists(dbEnvPath)) {
+      await fs.copy(dbEnvPath, rootEnvPath);
+      await fs.remove(dbEnvPath);
+      log(`✅ Created .env.example`);
+    }
   }
 }
