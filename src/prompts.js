@@ -2,6 +2,21 @@ import inquirer from "inquirer";
 import { validateProjectName, validateCurrentDirectory, validateOrmDatabaseCompatibility } from "./utils/validation.js";
 import { CLIError } from "./utils/errorHandler.js";
 
+/**
+ * Prompts user for project configuration using Inquirer
+ * Validates all inputs before returning
+ * 
+ * @returns {Promise<Object>} User answers including:
+ *   - projectName: string
+ *   - language: 'JavaScript' | 'TypeScript'
+ *   - orm: 'Prisma' | 'Sequelize' | 'Mongoose' | 'None'
+ *   - database: 'Postgres' | 'MySQL' | 'Mongo' | 'SQLite' | 'None'
+ *   - swagger: boolean
+ *   - docker: boolean
+ *   - git: boolean
+ * 
+ * @throws {CLIError} If validation fails
+ */
 export async function askUser() {
   // Validate current directory first
   const dirValidation = validateCurrentDirectory();

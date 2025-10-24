@@ -6,6 +6,17 @@ import { updatePackage } from "./updatePackage.js";
 import { log } from "./utils/log.js";
 import { withErrorHandling, handleError } from "./utils/errorHandler.js";
 
+/**
+ * Main CLI entry point
+ * Orchestrates the entire project creation process:
+ * 1. Prompts user for project configuration
+ * 2. Copies templates based on selections
+ * 3. Updates package.json with project name
+ * 4. Installs dependencies
+ * 5. Initializes git repository (if requested)
+ * 
+ * @throws {CLIError} If any step fails during project creation
+ */
 export async function runCLI() {
   try {
     const answers = await askUser();
