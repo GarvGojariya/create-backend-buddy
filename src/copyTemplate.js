@@ -65,18 +65,33 @@ export async function copyTemplate(answers) {
   if (auth) await copy("features/auth", "src/features/auth");
   if (swagger) await copy("features/swagger", "src/features/swagger");
   if (docker) {
-    await copy("features/docker");
-    // Update docker-compose.yml for the correct database
+    // Copy Dockerfile first
+    await fs.copy(
+      path.join(TEMPLATES_PATH, "features/docker/Dockerfile"),
+      path.join(projectPath, "Dockerfile")
+    );
+    log("✅ Copied Dockerfile");
+    
+    // Copy appropriate docker-compose.yml based on database
     if (database === "MySQL") {
       await fs.copy(
         path.join(TEMPLATES_PATH, "features/docker/docker-compose.mysql.yml"),
         path.join(projectPath, "docker-compose.yml")
       );
+      log("✅ Copied docker-compose.yml (MySQL)");
     } else if (database === "Mongo") {
       await fs.copy(
         path.join(TEMPLATES_PATH, "features/docker/docker-compose.mongo.yml"),
         path.join(projectPath, "docker-compose.yml")
       );
+      log("✅ Copied docker-compose.yml (MongoDB)");
+    } else {
+      // Default to Postgres for PostgreSQL and SQLite
+      await fs.copy(
+        path.join(TEMPLATES_PATH, "features/docker/docker-compose.yml"),
+        path.join(projectPath, "docker-compose.yml")
+      );
+      log("✅ Copied docker-compose.yml (PostgreSQL)");
     }
   }
 
